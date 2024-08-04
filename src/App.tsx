@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { AppContainer } from "./components/Container";
 import { AuthProvider } from "./context/userContext";
 
-function App() {
+const App = () => {
   return (
     <AuthProvider>
       <Router>
@@ -11,6 +11,6 @@ function App() {
       </Router>
     </AuthProvider>
   );
-}
+};
 
 export default App;
