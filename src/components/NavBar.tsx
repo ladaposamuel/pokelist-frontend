@@ -1,8 +1,15 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../context/userContext";
 
 export const NavBar: React.FC = () => {
   const location = useLocation();
+  const { isAuthenticated, deleteToken } = useAuth();
+
+  const logoutUser = () => {
+    deleteToken();
+    window.location.href = "/";
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light navbar-laravel">
@@ -26,24 +33,59 @@ export const NavBar: React.FC = () => {
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link
-                to="/login"
+                to="/"
                 className={`nav-link ${
-                  location.pathname === "/login" ? "active" : ""
+                  location.pathname === "/" ? "active" : ""
                 }`}
               >
-                Login
+                Home
               </Link>
             </li>
-            <li className="nav-item">
-              <Link
-                to="/register"
-                className={`nav-link ${
-                  location.pathname === "/register" ? "active" : ""
-                }`}
-              >
-                Register
-              </Link>
-            </li>
+
+            {isAuthenticated ? (
+              <>
+                {/* Links for authenticated users */}
+                <li className="nav-item">
+                  <Link
+                    to="/dashboard"
+                    className={`nav-link ${
+                      location.pathname === "/dashboard" ? "active" : ""
+                    }`}
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="" className="nav-link" onClick={logoutUser}>
+                    Logout
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                {/* Links for non-authenticated users */}
+                <li className="nav-item">
+                  <Link
+                    to="/login"
+                    className={`nav-link ${
+                      location.pathname === "/login" ? "active" : ""
+                    }`}
+                  >
+                    Login
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/register"
+                    className={`nav-link ${
+                      location.pathname === "/register" ? "active" : ""
+                    }`}
+                  >
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>

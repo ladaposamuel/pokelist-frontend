@@ -1,7 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/userContext";
 
 export const HomePage: React.FC = () => {
+  const { isAuthenticated, currentUser } = useAuth();
+
   return (
     <div className="card">
       <div className="card-header">
@@ -14,14 +17,23 @@ export const HomePage: React.FC = () => {
           Get started by creating an account or logging in.
         </p>
         <hr />
-        <div className="mb-2">
-          <Link className="btn btn-primary btn-lg" to="/register">
-            Create an account
-          </Link>{" "}
-          <Link className="btn btn-secondary btn-lg" to="/login">
-            Login
-          </Link>
-        </div>
+
+        {isAuthenticated && currentUser ? (
+          <div>
+            <h4>Hello, {currentUser?.name}</h4>
+            <p>You are currently logged in.</p>
+            You can now <Link to="/dashboard">view your dashboard</Link>
+          </div>
+        ) : (
+          <div className="mb-2">
+            <Link className="btn btn-primary btn-lg" to="/register">
+              Create an account
+            </Link>{" "}
+            <Link className="btn btn-secondary btn-lg" to="/login">
+              Login
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

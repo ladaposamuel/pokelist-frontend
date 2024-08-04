@@ -1,30 +1,38 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
-import { User } from "../types";
+import { Organisation, User } from "../types";
+import { fetchOrganisations } from "../api/Organisation";
 import { useUser } from "../api";
-import { useAuth } from "../context/userContext";
 
-const LoginForm = ({ showToast }: { showToast: Function }) => {
+const RegisterForm = ({ showToast }: { showToast: Function }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [organisations, setOrganisations] = useState<Organisation[]>([]);
 
-  const { loginUser } = useUser();
-  const { saveToken, keepUserLoggedIn } = useAuth();
-  const navigate = useNavigate();
+  const { registerUser } = useUser();
 
   const [error, setError] = useState({
+    name: false,
     email: false,
     password: false,
+    organisation: false,
   });
   const [state, setState] = useState({
+    name: "",
     email: "",
     password: "",
+    organisation: "",
     successMessage: "",
   });
+
+  useEffect(() => {
+    fetchOrganisations().then((organisations) => {
+      setOrganisations(organisations);
+    });
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -39,31 +47,32 @@ const LoginForm = ({ showToast }: { showToast: Function }) => {
     e.preventDefault();
     setIsLoading(true);
     setError({
+      name: !state.name,
       email: !state.email,
       password: !state.password,
+      organisation: !state.organisation,
     });
 
-    const isValid = state.email && state.password;
+    const isValid =
+      state.name && state.email && state.password && state.organisation;
 
     if (isValid) {
       try {
-        const loggedinUser = await loginUser({
+        await registerUser({
+          name: state.name,
           email: state.email,
           password: state.password,
+          organisationId: Number(state.organisation),
         } as User);
-        if (typeof loggedinUser === "object" && loggedinUser.token) {
-          setIsLoading(false);
-          showToast("Success", "Login successful!", "success");
-          saveToken(loggedinUser.token);
-          keepUserLoggedIn(loggedinUser);
-          navigate("/dashboard");
-        } else {
-          setIsLoading(false);
-          showToast("Error", "Invalid response from server", "warning");
-        }
-      } catch (error: any) {
         setIsLoading(false);
-        showToast("Error", error?.message || "An error occurred", "warning");
+        showToast("Success", "Account created successfully!", "success");
+
+        //TODO: Redirect to dashboard
+
+        setState((prev) => ({ ...prev, successMessage: "" }));
+      } catch (error) {
+        setIsLoading(false);
+        showToast("Error", error, "warning");
       }
     } else {
       setIsLoading(false);
@@ -73,6 +82,19 @@ const LoginForm = ({ showToast }: { showToast: Function }) => {
   return (
     <Form>
       <Form.Group as={Row} className="form-group">
+        <Form.Label>Name</Form.Label>
+        <Col md={6}>
+          <Form.Control
+            type="text"
+            id="name"
+            value={state.name}
+            required
+            isInvalid={error.name}
+            onChange={handleChange}
+          />
+        </Col>
+      </Form.Group>
+      <Form.Group as={Row} className="form-group mt-4">
         <Form.Label>E-Mail Address</Form.Label>
         <Col md={6}>
           <Form.Control
@@ -100,6 +122,30 @@ const LoginForm = ({ showToast }: { showToast: Function }) => {
           />
         </Col>
       </Form.Group>
+
+      {organisations && organisations.length > 0 ? (
+        <Form.Group as={Row} className="form-group mt-4">
+          <Form.Label>Choose an Organization</Form.Label>
+          <Col md={6}>
+            <Form.Select
+              id="organisation"
+              value={state.organisation}
+              required
+              isInvalid={error.organisation}
+              onChange={handleChange}
+            >
+              <option value="">-- Select an Organization --</option>
+              {organisations.map((organisation) => (
+                <option key={organisation.id} value={organisation.id}>
+                  {organisation.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+        </Form.Group>
+      ) : (
+        organisations === null && <Spinner animation="border" role="status" />
+      )}
       <Row className="mt-4">
         <Col>
           <Button
@@ -120,7 +166,7 @@ const LoginForm = ({ showToast }: { showToast: Function }) => {
                 <span className="ms-2">Loading...</span>
               </>
             ) : (
-              "Login"
+              "Create an account"
             )}
           </Button>
         </Col>
@@ -129,4 +175,4 @@ const LoginForm = ({ showToast }: { showToast: Function }) => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
