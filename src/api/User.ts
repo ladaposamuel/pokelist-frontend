@@ -3,7 +3,7 @@ import { apiClient } from "../utils/apiClient";
 import axios from "axios";
 
 const userApi = () => {
-  const registerUser = async (user: User): Promise<boolean> => {
+  const registerUser = async (user: User): Promise<User> => {
     try {
       const response = await apiClient.post("user/register", user);
       if (response.success) {
@@ -14,7 +14,7 @@ const userApi = () => {
         const { message } = error.response?.data || {};
         throw message;
       } else {
-        throw error;
+        throw new Error("Something went wrong while registering user");
       }
     }
     throw new Error("Something went wrong while registering user");

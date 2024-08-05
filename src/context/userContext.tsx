@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User } from "../types";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -18,11 +19,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
-    // Check if the user is authenticated on component mount
     const token = localStorage.getItem("pokelist-token");
     setIsAuthenticated(!!token);
 
-    // Load the current user from localStorage on mount
+    if (isTokenExpired()) {
+      deleteToken();
+    }
+
     const currentUserString = localStorage.getItem("pokelist-current-user");
     if (currentUserString) {
       setCurrentUser(JSON.parse(currentUserString));
@@ -37,7 +40,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const deleteToken = () => {
     localStorage.removeItem("pokelist-token");
     setIsAuthenticated(false);
-    setCurrentUser(null); // Reset currentUser when token is deleted
+    setCurrentUser(null);
+  };
+
+  const isTokenExpired = () => {
+    const token = localStorage.getItem("pokelist-token");
+    if (!token) {
+      return true;
+    }
+    try {
+      const decodedToken = jwtDecode(token);
+
+      if (typeof decodedToken === "object" && decodedToken.exp !== undefined) {
+        const currentTime = Date.now() / 1000;
+        return decodedToken.exp < currentTime;
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return true;
+    }
   };
 
   const keepUserLoggedIn = (user: User) => {
