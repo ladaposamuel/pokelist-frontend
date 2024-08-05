@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/userContext";
+import { apiClient } from "../utils/apiClient";
+import Badge from "react-bootstrap/Badge";
 
 export const HomePage: React.FC = () => {
   const { isAuthenticated, currentUser } = useAuth();
+  const [pingBackend, setPingBackend] = useState<boolean | string>(false);
+
+  const pingBackendServer = async () => {
+    setPingBackend("checking");
+    try {
+      const response = await apiClient.get("");
+      setPingBackend(response.success);
+    } catch (error) {
+      setPingBackend(false);
+    }
+  };
+
+  useEffect(() => {
+    setPingBackend("checking");
+    const interval = setInterval(pingBackendServer, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="card">
@@ -21,7 +40,11 @@ export const HomePage: React.FC = () => {
         {isAuthenticated && currentUser ? (
           <div>
             <h4>Hello, {currentUser?.name}</h4>
-            <p>You are currently logged in.</p>
+            <p>You are currently logged in & have access to your dashboard.</p>
+            <p>
+              You are currently in the <b>{currentUser?.organisation?.name}</b>{" "}
+              organisation.
+            </p>
             You can now <Link to="/dashboard">view your dashboard</Link>
           </div>
         ) : (
@@ -34,6 +57,20 @@ export const HomePage: React.FC = () => {
             </Link>
           </div>
         )}
+        <div className="mt-4">
+          API status:{" "}
+          {pingBackend !== "checking" ? (
+            pingBackend ? (
+              <Badge bg="success">Online</Badge>
+            ) : (
+              <Badge bg="danger">Offline</Badge>
+            )
+          ) : (
+            <Badge bg="warning" text="dark">
+              Checking...
+            </Badge>
+          )}
+        </div>
       </div>
     </div>
   );
