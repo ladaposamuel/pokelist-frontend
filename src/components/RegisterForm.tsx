@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 import { Organisation, User } from "../types";
-import { fetchOrganisations } from "../api/Organisation";
+import { useOrganisation } from "../api";
 import { useUser } from "../api";
+import { useAuth } from "../context/userContext";
+import { useToast } from "../context/toastContext";
+import Alert from "react-bootstrap/Alert";
 
-const RegisterForm = ({ showToast }: { showToast: Function }) => {
+const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [organisations, setOrganisations] = useState<Organisation[]>([]);
+  const { fetchOrganisations } = useOrganisation();
+
+  const { saveToken, keepUserLoggedIn } = useAuth();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const { registerUser } = useUser();
 
@@ -29,9 +38,19 @@ const RegisterForm = ({ showToast }: { showToast: Function }) => {
   });
 
   useEffect(() => {
-    fetchOrganisations().then((organisations) => {
-      setOrganisations(organisations);
-    });
+    const fetchData = async () => {
+      try {
+        const organisations = await fetchOrganisations();
+        setOrganisations(organisations);
+      } catch (error: any) {
+        showToast(
+          "Error",
+          `Failed to fetch organisations: ${error.message}`,
+          "warning"
+        );
+      }
+    };
+    fetchData();
   }, []);
 
   const handleChange = (
@@ -58,7 +77,7 @@ const RegisterForm = ({ showToast }: { showToast: Function }) => {
 
     if (isValid) {
       try {
-        await registerUser({
+        const newUser = await registerUser({
           name: state.name,
           email: state.email,
           password: state.password,
@@ -67,12 +86,19 @@ const RegisterForm = ({ showToast }: { showToast: Function }) => {
         setIsLoading(false);
         showToast("Success", "Account created successfully!", "success");
 
-        //TODO: Redirect to dashboard
+        saveToken(newUser.token);
+        keepUserLoggedIn(newUser);
+
+        navigate("/dashboard");
 
         setState((prev) => ({ ...prev, successMessage: "" }));
-      } catch (error) {
+      } catch (error: any) {
         setIsLoading(false);
-        showToast("Error", error, "warning");
+        showToast(
+          "Error",
+          `Failed to create account: ${error}`,
+          "warning"
+        );
       }
     } else {
       setIsLoading(false);
@@ -146,12 +172,24 @@ const RegisterForm = ({ showToast }: { showToast: Function }) => {
       ) : (
         organisations === null && <Spinner animation="border" role="status" />
       )}
+
+      {organisations && organisations.length === 0 && (
+        <Row className="mt-4">
+          <Col md={6}>
+            <Alert variant={"warning"}>
+              We couldn't find any organisations, and registeration is currently{" "}
+              <b>disabled</b>. Please try again later.
+            </Alert>
+          </Col>
+        </Row>
+      )}
+
       <Row className="mt-4">
         <Col>
           <Button
             variant="primary"
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || organisations.length === 0}
             onClick={handleSubmitClick}
           >
             {isLoading ? (

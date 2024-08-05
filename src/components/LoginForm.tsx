@@ -8,13 +8,15 @@ import Spinner from "react-bootstrap/Spinner";
 import { User } from "../types";
 import { useUser } from "../api";
 import { useAuth } from "../context/userContext";
+import { useToast } from "../context/toastContext";
 
-const LoginForm = ({ showToast }: { showToast: Function }) => {
+const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { loginUser } = useUser();
   const { saveToken, keepUserLoggedIn } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [error, setError] = useState({
     email: false,
