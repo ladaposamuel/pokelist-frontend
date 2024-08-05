@@ -4,7 +4,7 @@ import Col from "react-bootstrap/Col";
 
 document.title = "Create an account | PokeList";
 
-const RegisterPage = ({ showToast }: { showToast: Function }) => {
+const RegisterPage = () => {
   return (
     <div className="card">
       <div className="card-header">
@@ -19,7 +19,7 @@ const RegisterPage = ({ showToast }: { showToast: Function }) => {
           </Col>
         </Row>
 
-        <RegisterForm showToast={showToast} />
+        <RegisterForm />
       </div>
     </div>
   );
