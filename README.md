@@ -1,46 +1,72 @@
-# Getting Started with Create React App
+# PokeList Organisation App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the PokeList Organisation App.
 
-## Available Scripts
+## Getting Started
 
-In the project directory, you can run:
+1. Clone the repo
+2. Run `npm install`
+3. Run `npm start`
+4. Open [http://localhost:3001](http://localhost:3001) to view it in the browser (or use the provided .env file to set the API URL, I used 3001 so backend can use 3000)
 
-### `npm start`
+## Screenshots
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Register Page
+![alt text](https://i.imgur.com/V4g8dUA.png)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Login Page
+![alt text](https://i.imgur.com/Wqpqhcq.png)
 
-### `npm test`
+Home Page (Logged In)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![alt text](https://i.imgur.com/NRxAqc9.png)
 
-### `npm run build`
+Home Page (Logged Out)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![alt text](https://i.imgur.com/Yy0CRDF.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Dashboard Page
+![alt text](https://i.imgur.com/bsdGyjU.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Notes
 
-### `npm run eject`
+This is a simple React app I built using the create-react-app template, along with react-router for handling navigation and react-bootstrap for styling components. The app features a custom context provider to manage the user's token, user details, and toast notifications. It also includes a custom hook to check if the user is logged in.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+All API calls are made using the axios library, with the API code located in the `/src/api` folder. The app's components are organized in the `/src/components` folder, while the different pages are found in the `/src/pages` folder.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+One cool feature I added is a backend ping indicator on the homepage, which checks if the backend server is up and running. While there are certainly ways to improve the app further, I wanted to keep things simple for this project and didn't use Redux or any other state management library.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Overall, this app demonstrates my skills in building a basic React application with authentication, API integration, and a clean, modular structure. I had fun creating it and learned a lot in the process!
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+.
+├── README.md
+├── package-lock.json
+├── package.json
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── api
+│   ├── components
+│   ├── context
+│   ├── index.css
+│   ├── index.tsx
+│   ├── logo.svg
+│   ├── pages
+│   ├── react-app-env.d.ts
+│   ├── reportWebVitals.ts
+│   ├── setupTests.ts
+│   ├── types
+│   └── utils
+└── tsconfig.json
 
-## Learn More
+12 directories, 25 files
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+```

@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-const baseURL = "http://localhost:3000/api";
+const baseURL = process.env.BACKEND_URL || "http://localhost:3000";
 
 export const apiClient = {
   get: (url: string, config?: AxiosRequestConfig) =>

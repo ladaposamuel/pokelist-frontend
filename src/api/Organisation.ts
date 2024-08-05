@@ -3,7 +3,7 @@ import { apiClient } from "../utils/apiClient";
 import { useAuth } from "../context/userContext";
 
 const useOrganisation = () => {
-  const { currentUser } = useAuth(); // Move useAuth call inside the hook
+  const { currentUser } = useAuth();
 
   const fetchOrganisations = async (): Promise<Organisation[]> => {
     const response = await apiClient.get("organisations");

@@ -4,6 +4,9 @@ import { useAuth } from "../context/userContext";
 import { apiClient } from "../utils/apiClient";
 import Badge from "react-bootstrap/Badge";
 
+
+document.title = "Home Page | PokeList";
+
 export const HomePage: React.FC = () => {
   const { isAuthenticated, currentUser } = useAuth();
   const [pingBackend, setPingBackend] = useState<boolean | string>(false);

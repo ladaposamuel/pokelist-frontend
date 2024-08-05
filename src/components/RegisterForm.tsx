@@ -94,11 +94,7 @@ const RegisterForm = () => {
         setState((prev) => ({ ...prev, successMessage: "" }));
       } catch (error: any) {
         setIsLoading(false);
-        showToast(
-          "Error",
-          `Failed to create account: ${error}`,
-          "warning"
-        );
+        showToast("Error", `Failed to create account: ${error}`, "warning");
       }
     } else {
       setIsLoading(false);

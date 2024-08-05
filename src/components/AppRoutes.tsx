@@ -9,23 +9,16 @@ import PrivateRoute from "../utils/PrivateRoute";
 
 interface AppRoutesProps {
   isAuthenticated: boolean;
-
 }
 
-const AppRoutes: React.FC<AppRoutesProps> = ({
-  isAuthenticated,
-}) => {
+const AppRoutes: React.FC<AppRoutesProps> = ({ isAuthenticated }) => {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route
         path="/login"
         element={
-          isAuthenticated ? (
-            <Navigate to="/dashboard" replace />
-          ) : (
-            <LoginPage />
-          )
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
         }
       />
       <Route

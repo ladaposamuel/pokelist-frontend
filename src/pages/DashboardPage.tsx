@@ -9,6 +9,8 @@ import Spinner from "react-bootstrap/Spinner";
 import Badge from "react-bootstrap/Badge";
 import Alert from "react-bootstrap/Alert";
 
+document.title = "Dashboard | PokeList";
+
 export const DashboardPage = () => {
   const { fetchOrganisation } = useOrganisation();
   const [organisation, setOrganisation] = useState<Organisation | null>(null);

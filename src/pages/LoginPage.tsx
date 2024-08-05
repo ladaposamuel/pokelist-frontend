@@ -1,5 +1,7 @@
 import LoginForm from "../components/LoginForm";
 
+document.title = "Login | PokeList";
+
 export const LoginPage = () => {
   return (
     <div className="card">

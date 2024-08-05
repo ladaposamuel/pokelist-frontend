@@ -8,8 +8,6 @@ import AppRoutes from "./AppRoutes";
 export const AppContainer: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
-
-
   return (
     <>
       <NavBar />
@@ -17,10 +15,7 @@ export const AppContainer: React.FC = () => {
         <div className="cotainer">
           <div className="row justify-content-center">
             <div className="col-md-8">
-              <AppRoutes
-                isAuthenticated={isAuthenticated}
-              
-              />
+              <AppRoutes isAuthenticated={isAuthenticated} />
             </div>
           </div>
         </div>
