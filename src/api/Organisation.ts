@@ -1,6 +1,7 @@
 import { Organisation } from "../types";
 import { apiClient } from "../utils/apiClient";
 import { useAuth } from "../context/userContext";
+import { Pokemon } from "../types/Pokemon";
 
 const useOrganisation = () => {
   const { currentUser } = useAuth();
@@ -35,7 +36,25 @@ const useOrganisation = () => {
     return null;
   };
 
-  return { fetchOrganisations, fetchOrganisation };
+  const fetchOrganisationPokemons = async (): Promise<Pokemon[]> => {
+    if (!currentUser) {
+      return [];
+    }
+
+    const response = await apiClient.get(`pokemon/all`, {
+      headers: {
+        Authorization: currentUser.token,
+      },
+    });
+
+    if (response.success) {
+      return response.responseObject;
+    }
+
+    return [];
+  };
+
+  return { fetchOrganisations, fetchOrganisation, fetchOrganisationPokemons };
 };
 
 export { useOrganisation };
